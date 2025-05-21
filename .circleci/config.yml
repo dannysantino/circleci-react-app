@@ -1,9 +1,23 @@
 version: 2.1
 
 workflows:
-  test-deploy:
+  # test-deploy:
+  #   jobs:
+  #     - test
+  commit-workflow:
     jobs:
-      - test
+      - build
+  schedulde-workflow:
+    triggers:
+      - schedule:
+          cron: "*/2 * * * *"
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - build
+      - deploy
 
 jobs:
   test:
@@ -17,3 +31,21 @@ jobs:
       - run:
           name: Run Tests
           command: npm run test
+  build:
+    docker:
+      - image: circleci/node
+    working_directory: ~/circleci-demo-schedule
+    steps:
+      - checkout
+      - run:
+          name: Run Build Command
+          command: echo "Hey, I'm building here!"
+  deploy:
+    docker:
+      - image: circleci/node
+    working_directory: ~/circleci-demo-schedule
+    steps:
+      - checkout
+      - run:
+          name: Run Deploy Command
+          command: echo "Hey, I'm deployin' 'ere!"
