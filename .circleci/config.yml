@@ -10,7 +10,7 @@ workflows:
   schedulde-workflow:
     triggers:
       - schedule:
-          cron: "*/2 * * * *"
+          cron: "2 * * * *"
           filters:
             branches:
               only:
